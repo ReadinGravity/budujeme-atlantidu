@@ -1,23 +1,31 @@
 from PIL import Image
 
-img = Image.new('RGB', (250, 250), 'white')
+img = Image.new('RGB', (550, 550), 'white')
 pixels = img.load()
 
-a = input('Give point A as x,y:').split(',')
-b = input('Give point B as x,y:').split(',')
-a = list(map(int, a))
-b = list(map(int, b))
+a = input('Daj suradnice bodu A ako Ax,Ay:').split(',')
+b = input('Daj suradnice bodum B ako Bx,By:').split(',')
+a = list(map(int,a))
+b = list(map(int,b))
 
-if (a[0] > b[0] and a[1] > b[1]) or (a[0] > b[0] and a[1] < b[1]):
+#a[0] <= b[0]
+if a[0] > b[0]:
     a, b = b, a
 
-if b[0] - a[0] != 0:
+if a[0] == b[0]:  #ci ten had neni vertikalny
+    if a[1] > b[1]:
+        a[1], b[1] = b[1], a[1]
+    for y in range(a[1], b[1] + 1):
+        if 0 <= a[0] < 550 and 0 <= y < 550:
+            pixels[a[0], y] = (255, 0, 0)
+else:
     k = (b[1] - a[1]) / (b[0] - a[0])
     q = a[1] - k * a[0]
     temp = int(k * a[0] + q)
     for x in range(a[0], b[0] + 1):
         y = int(k * x + q)
-        pixels[x, y] = (255, 0, 0)
+        if 0 <= x < 550 and 0 <= y < 550:
+            pixels[x, y] = (255, 0, 0)
         print(x, y)
 
         vector = (b[0] - a[0], b[1] - a[1])
@@ -31,12 +39,8 @@ if b[0] - a[0] != 0:
                     i = -i
                 new_x = round((vector[1] * (temp + i) * (-1) + c * (-1)) / vector[0])
                 print(new_x, temp + i)
-                pixels[new_x, temp + i] = (255, 0, 0)
+                if 0 <= new_x < 550 and 0 <= temp + i < 550:
+                    pixels[new_x, temp + i] = (255, 0, 0)
         temp = y
-else:
-    if a[1] > b[1]:
-        a[1], b[1] = b[1], a[1]
-    for y in range(a[1], b[1] + 1):
-        pixels[a[0], y] = (255, 0, 0)
 
 img.show()
